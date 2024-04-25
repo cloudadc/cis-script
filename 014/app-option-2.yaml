@@ -30,7 +30,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    cis.f5.com/as3-tenant: cistest014
+    cis.f5.com/as3-tenant: cistest014-2
     cis.f5.com/as3-app: app-2
     cis.f5.com/as3-pool: app_2_svc_pool
   name: app-svc-2

@@ -16,7 +16,7 @@ data:
         "class": "ADC",
         "schemaVersion": "3.36.0",
         "id": "cm-014-ssl",
-        "cistest014": {
+        "cistest014-2": {
           "class": "Tenant",
           "app-2": {
             "class": "Application",
