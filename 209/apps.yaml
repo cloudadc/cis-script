@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: cistest14
+  labels:
+    cis.f5.com/zone: cistest
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -50,6 +52,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: cistest15
+  labels:
+    cis.f5.com/zone: cistest
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -98,6 +102,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: cistest16
+  labels:
+    cis.f5.com/zone: cistest
 ---
 apiVersion: apps/v1
 kind: Deployment

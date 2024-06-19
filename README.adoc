@@ -595,13 +595,13 @@ Request ID: 0473c17d40cde2901ebe300ce3b87658
 [source, bash]
 .*1. 创建应用*
 ----
-kubectl apply -f app-option-2.yaml
+kubectl apply -f 014/app-option-2.yaml
 ----
 
 [source, bash]
 .*2. 下发服务*
 ----
-kubectl apply -f cm-option-2.yaml
+kubectl apply -f 014/cm-option-2.yaml
 ----
 
 [source, bash]

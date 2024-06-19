@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: bigip-ctlr
+  namespace: bigip-ctlr-ns
+---
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: bigip-ctlr-clusterrole
+rules:
+- apiGroups: ["", "extensions", "networking.k8s.io"]
+  resources: ["nodes", "services", "endpoints", "namespaces", "ingresses", "pods", "configmaps", "secrets", "events", "ingresses"]
+  verbs: ["get", "list", "watch"]
+
+---
+
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: bigip-ctlr-clusterrole-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: bigip-ctlr-clusterrole
+subjects:
+- apiGroup: ""
+  kind: ServiceAccount
+  name: bigip-ctlr
+  namespace: bigip-ctlr-ns
+
+---
+
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: bigip-ctlr-writerole
+rules:
+- apiGroups: ["", "extensions", "networking.k8s.io"]
+  resources: ["events", "ingresses/status"]
+  verbs: ["get", "list", "watch", "update", "create", "patch"]
+
+---
+
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: bigip-ctlr-writerole-binding
+  namespace: bigip-ctlr-ns
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: bigip-ctlr-writerole
+subjects:
+- apiGroup: ""
+  kind: ServiceAccount
+  name: bigip-ctlr
+  namespace: bigip-ctlr-ns

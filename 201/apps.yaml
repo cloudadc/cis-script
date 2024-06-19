@@ -3,7 +3,7 @@ kind: Namespace
 metadata:
   name: cistest1
   labels:
-    cis_scanner: cistest
+    cis.f5.com/zone: cistest
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -53,7 +53,7 @@ kind: Namespace
 metadata:
   name: cistest2
   labels:
-    cis_scanner: cistest
+    cis.f5.com/zone: cistest
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -103,7 +103,7 @@ kind: Namespace
 metadata:
   name: cistest3
   labels:
-    cis_scanner: cistest
+    cis.f5.com/zone: cistest
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -153,7 +153,7 @@ kind: Namespace
 metadata:
   name: cistest4
   labels:
-    cis_scanner: cistest
+    cis.f5.com/zone: cistest
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -203,7 +203,7 @@ kind: Namespace
 metadata:
   name: cistest5
   labels:
-    cis_scanner: cistest
+    cis.f5.com/zone: cistest
 ---
 apiVersion: apps/v1
 kind: Deployment

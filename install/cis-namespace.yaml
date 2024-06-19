@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bigip-ctlr-192-168-200-204
+  labels:
+    app: bigip-ctlr-192-168-200-204
+  namespace: bigip-ctlr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bigip-ctlr-192-168-200-204
+  template:
+    metadata:
+      name: bigip-ctlr-192-168-200-204
+      labels:
+        app: bigip-ctlr-192-168-200-204
+    spec:
+      serviceAccountName: bigip-ctlr
+      containers:
+        - name: bigip-ctlr
+          #image: "f5networks/k8s-bigip-ctlr:2.9.1-1"
+          image: "quay.io/f5networks/k8s-bigip-ctlr-devel:hubModePerformance10"
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            exec:
+              command:
+              - curl
+              - -k
+              - -s
+              - -o
+              - /dev/null
+              - https://192.168.200.204/mgmt/shared/appsvcs/info
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            timeoutSeconds: 5
+            successThreshold: 1
+          env:
+            - name: BIGIP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: bigip-login
+                  key: username
+            - name: BIGIP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bigip-login
+                  key: password
+          command: ["/app/bin/k8s-bigip-ctlr"]
+          args: [
+            "--bigip-username=$(BIGIP_USERNAME)",
+            "--bigip-password=$(BIGIP_PASSWORD)",
+            "--log-level=INFO",
+            "--manage-ingress=false",
+            "--manage-configmaps=true",
+            "--bigip-url=192.168.200.204",
+            "--insecure=true",
+            "--hubmode=true",
+            "--filter-tenants=true",
+            "--log-as3-response=true",
+            "--bigip-partition=k8s",
+            "--pool-member-type=cluster",
+            "--namespace=f5-manage01-1",
+            "--namespace=bigip-ctlr-ns-1",
+            "--namespace=bigip-ctlr-ns-2",
+            "--namespace=bigip-ctlr-ns-3",
+            "--namespace=bigip-ctlr-ns-4",
+            "--namespace=bigip-ctlr-ns-5",
+            "--namespace=bigip-ctlr-ns-6",
+            "--namespace=bigip-ctlr-ns-7",
+            "--namespace=bigip-ctlr-ns-8",
+            "--namespace=bigip-ctlr-ns-9",
+            "--namespace=bigip-ctlr-ns-10",
+            "--namespace=bigip-ctlr-ns-11",
+            "--namespace=bigip-ctlr-ns-12",
+            "--namespace=bigip-ctlr-ns-13",
+            "--namespace=bigip-ctlr-ns-14",
+            "--namespace=bigip-ctlr-ns-15",
+            "--namespace=bigip-ctlr-ns-16",
+            "--namespace=bigip-ctlr-ns-17",
+            "--namespace=bigip-ctlr-ns-18",
+            "--namespace=bigip-ctlr-ns-19",
+            "--namespace=bigip-ctlr-ns-20",
+            "--namespace=bigip-ctlr-ns-21",
+            "--namespace=f5-hub-1",
+            "--namespace=f5-hub-2"
+            ]
