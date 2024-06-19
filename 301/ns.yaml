@@ -1,0 +1,146 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-1
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-2
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-3
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-4
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-5
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-6
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-7
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-8
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-9
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-10
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-11
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-12
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-13
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-14
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-15
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-16
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-17
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-18
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-19
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: bigip-ctlr-ns-20
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cis.f5.com/zone: zone-1
+  name: f5-manage01-1

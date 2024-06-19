@@ -1683,3 +1683,20 @@ kubectl apply -f 300/cm-249.yaml
 
 kubectl scale -n bigip-ctlr-ns-10 deploy/app-svc-24-app --replicas=1
 ----
+
+=== 可靠性测试
+
+[source, bash]
+.*Preparation*
+----
+kubectl apply -f 301/app-200.yaml
+kubectl apply -f 301/cm-200.yaml
+----
+
+[source, bash]
+.*Test*
+----
+nohup bash perf.sh > output.log 2>&1 & 
+----
+
+
