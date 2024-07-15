@@ -790,6 +790,144 @@ Cache-Control: no-cache
 Set-Cookie: BIGipServer~cistest001~app-1~app_1_svc_pool=857161828.36895.0000; path=/; Httponly
 ----
 
+=== UDP 健康检查
+
+[source, bash]
+.*1. 创建应用*
+----
+kubectl apply -f 019/app.yaml
+----
+
+[source, bash]
+.*2. 测试验证*
+----
+//
+----
+
+=== 限流
+
+[source, bash]
+.*创建应用*
+---- 
+kubectl apply -f 020/app.yaml
+----
+
+==== 没有限流场景
+
+[source, bash]
+.*1. 部署*
+----
+kubectl apply -f 020/cm.yaml 
+----
+
+[source, bash]
+.*2. 测试*
+----
+% ssh root@192.168.71.100 tmsh list ltm virtual /cistest020/app_1/app_1_vs    
+(root@192.168.71.100) Password: 
+ltm virtual /cistest020/app_1/app_1_vs {
+    creation-time 2024-07-15:16:45:09
+    description app_1
+    destination /cistest020/192.168.71.222:80
+    ip-protocol tcp
+    last-modified-time 2024-07-15:16:45:09
+    mask 255.255.255.255
+    partition cistest020
+    persist {
+        cookie {
+            default yes
+        }
+    }
+    pool /cistest020/app_1/app_1_svc_pool
+    profiles {
+        /cistest020/app_1/app_1_httpprofile { }
+        /cistest020/app_1/app_1_oneconnectprofile { }
+        f5-tcp-progressive { }
+    }
+    serverssl-use-sni disabled
+    source 0.0.0.0/0
+    source-address-translation {
+        pool /cistest020/app_1/app_1_vs-self
+        type snat
+    }
+    translate-address enabled
+    translate-port enabled
+    vs-index 16489
+}
+----
+
+==== HTTP 连接数限流
+
+[source, bash]
+.*1. 部署*
+----
+kubectl apply -f 020/cm-http-limit-conn.yaml
+----
+
+[source, bash]
+.*2. 测试*
+----
+% ssh root@192.168.71.100 tmsh list ltm virtual /cistest020/app_1/app_1_vs connection-limit
+(root@192.168.71.100) Password: 
+ltm virtual /cistest020/app_1/app_1_vs {
+    connection-limit 10
+}
+----
+
+==== HTTP 带宽限流
+
+[source, bash]
+.*1. 部署*
+----
+kubectl apply -f 020/cm-http-limit-bandwidth.yaml
+----
+
+[source, bash]
+.*2. 测试*
+----
+% ssh root@192.168.71.100 tmsh list ltm virtual /cistest020/app_1/app_1_vs bwc-policy
+(root@192.168.71.100) Password: 
+ltm virtual /cistest020/app_1/app_1_vs {
+    bwc-policy /cistest020/app_1/bc_test_limit
+}
+----
+
+==== TCP 连接数限流
+
+[source, bash]
+.*1. 部署*
+----
+kubectl apply -f 020/cm-tcp-limit-conn.yaml
+----
+
+[source, bash]
+.*2. 测试*
+----
+% ssh root@192.168.71.100 tmsh list ltm virtual /cistest020/app_1/app_1_vs connection-limit
+(root@192.168.71.100) Password: 
+ltm virtual /cistest020/app_1/app_1_vs {
+    connection-limit 10
+}
+----
+
+==== TCP 带宽限流
+
+[source, bash]
+.*1. 部署*
+----
+kubectl apply -f 020/cm-tcp-limit-bandwidth.yaml
+----
+
+[source, bash]
+.*2. 测试*
+----
+% ssh root@192.168.71.100 tmsh list ltm virtual /cistest020/app_1/app_1_vs bwc-policy
+(root@192.168.71.100) Password: 
+ltm virtual /cistest020/app_1/app_1_vs {
+    bwc-policy /cistest020/app_1/bc_test_limit
+}
+----
+
 == 场景测试
 
 === 灰度发布

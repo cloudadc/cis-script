@@ -1,0 +1,66 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: veconfig-nsgroup1
+  namespace: f5-manage01-1
+  labels:
+    f5type: virtual-server
+    as3: "true"
+    isTenantNameServiceNamespace: "true"
+data:
+  template: |
+    {
+      "class": "AS3",
+      "action": "deploy",
+      "persist": true,
+      "declaration": {
+        "class": "ADC",
+        "schemaVersion": "3.36.0",
+        "id": "veconfig-nsgroup1",
+        "cistest020": {
+          "class": "Tenant",
+          "app_1": {
+            "class": "Application",
+            "template": "generic",
+            "app_1_vs": {
+              "class": "Service_HTTP",
+              "persistenceMethods": [ "cookie" ],
+              "virtualAddresses": [
+                "192.168.71.222"
+              ],
+              "virtualPort": 80,
+              "profileMultiplex": {
+                "use": "app_1_oneconnectprofile"
+              },
+              "profileHTTP": {
+                "use": "app_1_httpprofile"
+              },
+              "snat": "self",
+              "pool": "app_1_svc_pool"
+            },
+            "app_1_svc_pool": {
+              "class": "Pool",
+              "monitors": [
+                "tcp"
+              ],
+              "loadBalancingMode": "least-connections-member",
+              "members": [
+              {
+                "servicePort": 80,
+                "serverAddresses": []
+              }
+              ]
+            },
+            "app_1_httpprofile": {
+              "class": "HTTP_Profile",
+              "xForwardedFor": true
+            },
+            "app_1_oneconnectprofile": {
+              "class": "Multiplex_Profile",
+              "sourceMask": "255.255.255.255",
+              "maxConnectionReuse": 5
+            }
+          }
+        }
+      }
+    }
