@@ -1,26 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bigip-ctlr-192-168-200-204
+  name: bigip-ctlr
   labels:
-    app: bigip-ctlr-192-168-200-204
+    app: bigip-ctlr
   namespace: bigip-ctlr
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: bigip-ctlr-192-168-200-204
+      app: bigip-ctlr
   template:
     metadata:
-      name: bigip-ctlr-192-168-200-204
+      name: bigip-ctlr
       labels:
-        app: bigip-ctlr-192-168-200-204
+        app: bigip-ctlr
     spec:
       serviceAccountName: bigip-ctlr
       containers:
         - name: bigip-ctlr
-          #image: "f5networks/k8s-bigip-ctlr:2.9.1-1"
-          image: "quay.io/f5networks/k8s-bigip-ctlr-devel:hubModePerformance10"
+          #image: "cloudadc/k8s-bigip-ctlr:2.16.1.2"
+          #image: "quay.io/f5networks/k8s-bigip-ctlr-devel:hubModePerformance10"
+          image: "f5networks/k8s-bigip-ctlr:2.17.1"
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3
@@ -31,7 +32,7 @@ spec:
               - -s
               - -o
               - /dev/null
-              - https://192.168.200.204/mgmt/shared/appsvcs/info
+              - https://192.168.71.100/mgmt/shared/appsvcs/info
             initialDelaySeconds: 15
             periodSeconds: 15
             timeoutSeconds: 5
@@ -51,14 +52,18 @@ spec:
           args: [
             "--bigip-username=$(BIGIP_USERNAME)",
             "--bigip-password=$(BIGIP_PASSWORD)",
-            "--log-level=INFO",
+            "--log-level=DEBUG",
             "--manage-ingress=false",
+            "--log-as3-response=true",
             "--manage-configmaps=true",
-            "--bigip-url=192.168.200.204",
+            "--bigip-url=192.168.71.100",
             "--insecure=true",
             "--hubmode=true",
+            "--disable-teems=true",
+            "--node-poll-interval=360",
+            "--periodic-sync-interval=36000",
             "--filter-tenants=true",
-            "--log-as3-response=true",
+            "--log-as3-response=false",
             "--bigip-partition=k8s",
             "--pool-member-type=cluster",
             "--namespace-label=cis.f5.com/zone=zone-1",
