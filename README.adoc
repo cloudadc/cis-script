@@ -1732,6 +1732,69 @@ probe_success 1
 probe_tls_version_info{version="TLS 1.2"} 1
 ----
 
+=== --namespace with Watch-List 
+
+[source, bash]
+.*1. CIS 部署文件中 watch 所有业务的 namespace*
+----
+            "--namespace=f5-hub-1",
+            "--namespace=cistest214",
+----
+
+NOTE: cistest214 is the app namespace, f5-hub-1 is configmap namespace
+
+[source, bash]
+.*2. Deploy APP*
+----
+kubectl apply -f 214/app.yaml
+----
+
+[source, bash]
+.*3. Add isTenantNameServiceNamespace to Configmap*
+----
+  labels:
+    f5type: virtual-server
+    as3: "true"
+    isTenantNameServiceNamespace: "true"
+----
+
+[source, bash]
+.*4. Deploy CM*
+----
+kubectl apply -f 214/cm.yaml 
+----
+
+=== --namespace-label with Watch-List
+
+[source, bash]
+.*1. CIS 部署文件中 watch 所有业务的 namespace*
+----
+"--namespace-label=cis.f5.com/zone=zone-test",
+----
+
+NOTE: All appp namespace should have lable `cis.f5.com/zone=zone-test`。
+
+[source, bash]
+.*2. Deploy APP*
+----
+kubectl apply -f 215/app.yaml
+----
+
+[source, bash]
+.*3. Add isTenantNameServiceNamespace to Configmap*
+----
+  labels:
+    f5type: virtual-server
+    as3: "true"
+    isTenantNameServiceNamespace: "true"
+----
+
+[source, bash]
+.*4. Deploy CM*
+----
+kubectl apply -f 215/cm.yaml 
+----
+
 == 性能测试
 
 === SVC 在一个 NS 场景(SVC 数量为 150，统计增加/删除/更新 1 个 SVC，同步到 BIG-IP 的时间)
