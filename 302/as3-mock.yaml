@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: as3-app
+  labels:
+    app: my-as3
+spec:
+  containers:
+    - name: as3
+      image: cloudadc/as3-mock:0.4
+      ports:
+        - containerPort: 443
+  restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: as3-svc
+  labels:
+    app: my-as3
+spec:
+  type: ClusterIP
+  selector:
+    app: my-as3
+  ports:
+    - protocol: TCP
+      port: 443
+      targetPort: 443

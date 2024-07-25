@@ -1900,4 +1900,42 @@ kubectl apply -f 301/cm-200.yaml
 nohup bash perf.sh > output.log 2>&1 & 
 ----
 
+=== CIS POD 资源消耗
+
+[source, bash]
+.*1. Deploy AS3 Mock*
+----
+kubectl apply -f 302/as3-mock.yaml
+----
+
+[source, bash]
+.*2. Deploy CIS 2.9.1*
+----
+参照安装部分，AS3 IP地址使用AS3 Mock地址
+----
+
+[source, bash]
+.*3. 2.9.1 性能测试*
+----
+nohup bash perf.sh > output.log 2>&1 &
+----
+
+[source, bash]
+.*4. Deploy CIS 2.17.1*
+----
+参照安装部分，AS3 IP地址使用AS3 Mock地址
+----
+
+[source, bash]
+.*5. 2.17.1 性能测试* 
+----
+nohup bash perf.sh > output.log 2>&1 &
+----
+
+*6. 结论*
+
+* 2.17.1 CPU 使用率略高于 2.9.1（分析原因：可能是因为 AS3 调用次数的增多，AS3 调用是秒级 IO 锁定）
+* 对比2.9.1， 2.17.1内存使用率增加了20%-30%（分析原因： 主要是与缓存相关，缓存消耗了更多的内存）
+
+
 
