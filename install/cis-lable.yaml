@@ -19,8 +19,6 @@ spec:
       serviceAccountName: bigip-ctlr
       containers:
         - name: bigip-ctlr
-          #image: "cloudadc/k8s-bigip-ctlr:2.16.1.2"
-          #image: "quay.io/f5networks/k8s-bigip-ctlr-devel:hubModePerformance10"
           image: "f5networks/k8s-bigip-ctlr:2.17.1"
           imagePullPolicy: IfNotPresent
           livenessProbe:

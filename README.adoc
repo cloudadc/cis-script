@@ -209,6 +209,24 @@ ltm pool /cistest004/app-1/app_1_svc_pool {
 }
 ----
 
+[source, bash]
+.*10. Standard VS + Custom HTTP Monitor*
+----
+kubectl apply -f 004/cm.4.yaml
+----
+
+[source, bash]
+.*11. Standard VS + Custom TCP Monitor*
+----
+kubectl apply -f 004/cm.5.yaml
+----
+
+[source, bash]
+.*12. FastL4 VS + Custom TCP Monitor*
+----
+kubectl apply -f 004/cm.6.yaml
+----
+
 === 使用 Rule 控制流量
 
 [source, bash]
