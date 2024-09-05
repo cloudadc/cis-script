@@ -1,13 +1,35 @@
 import os
 import re
+import argparse
 import shutil
 from datetime import datetime
 
-FILES = ["hygon-cis-197.20.30.204.yaml", "hygon-cis-197.20.30.205.yaml"]
-OLD_IMAGE = "artifactory.dev.com:31345/net-docker-ver-local/bigip-ctlr/k8s-bigip-ctlr:2.16.1"
+parser = argparse.ArgumentParser(description='cis 2.17.1 upgrade tools')
+parser.add_argument('--files', type=str, help='cis deployments need to update')
+parser.add_argument('--image', type=str, help='new cis image')
+parser.add_argument('--interval', type=str, help='cis sync interval')
+parser.add_argument('--label', type=str, help='cis watch namespace label')
+parser.add_argument('--cm', action='store_true', default=False, help='add label to configmap')
+cli = parser.parse_args()
+
+FILES = "cis-192.168.30.204.yaml,cis-192.168.30.205.yaml"
 NEW_IMAGE = "artifactory.dev.com:31345/net-docker-ver-local/bigip-ctlr/k8s-bigip-ctlr:2.17.1"
 SYNC_INTERVAL="30"
 NAMESPACE_LABEL="cis.f5.com/zone=zone-1"
+
+if cli.files:
+    FILES = cli.files
+
+if cli.image:
+    NEW_IMAGE = cli.image
+
+if cli.interval:
+    SYNC_INTERVAL = cli.interval
+
+if cli.label:
+    NAMESPACE_LABEL = cli.label
+
+file_array = FILES.split(",")
 
 update_backup_directory   = "backup"
 new_args_disable_teems    = '''            "--disable-teems=true",'''
@@ -15,6 +37,7 @@ new_args_sync_interval    = '''            "--periodic-sync-interval=REPLACEMENT
 new_args_namespace_label  = '''            "--namespace-label=REPLACEMENT",'''
 new_args_sync_interval    = new_args_sync_interval.replace("REPLACEMENT", SYNC_INTERVAL)
 new_args_namespace_label  = new_args_namespace_label.replace("REPLACEMENT", NAMESPACE_LABEL) 
+new_label_line            = '''    isTenantNameServiceNamespace: "true"'''
 
 new_liveness_probe = """          livenessProbe:
             exec:
@@ -38,11 +61,29 @@ def backup_file(file):
     else:
         print(f"Error: {file} does not exist.")
 
-def upgrade_image(file):
+def extract_image_from_yaml(file):
     if os.path.isfile(file):
         with open(file, 'r') as f:
             content = f.read()
-        content = content.replace(f'image: "{OLD_IMAGE}"', f'image: "{NEW_IMAGE}"')
+
+        # Regular expression to match the 'image' field within the 'containers' section
+        image_pattern = re.compile(r'image:\s*"([^"]+)"')
+        image_match = image_pattern.findall(content)
+
+        if image_match:
+            return image_match[0]
+        else:
+            return None
+    else:
+        return None
+
+
+def upgrade_image(file):
+    old_cis_image = extract_image_from_yaml(file)
+    if os.path.isfile(file):
+        with open(file, 'r') as f:
+            content = f.read()
+        content = content.replace(f'image: "{old_cis_image}"', f'image: "{NEW_IMAGE}"')
         with open(file, 'w') as f:
             f.write(content)
         print(f"Replaced image in {file} to {NEW_IMAGE}")
@@ -125,8 +166,31 @@ def upgrade_arguments(file):
     else:
         print(f"Error: {file} does not exist.")
 
-for file in FILES:
-    backup_file(file)
-    upgrade_image(file)
-    upgrade_liveness_probe(file)
-    upgrade_arguments(file)
+def upgrade_configmap(file_path):
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+
+    modified_lines = []
+    label_inserted = False
+
+    for line in lines:
+        modified_lines.append(line)
+        if 'as3: "true"' in line and not label_inserted:
+            modified_lines.append(new_label_line + '\n')
+            label_inserted = True
+
+    with open(file_path, 'w') as file:
+        file.writelines(modified_lines)
+
+    print(f"Add {new_label_line} to {file_path}")
+
+
+if cli.cm:
+    for file in file_array:
+        upgrade_configmap(file)
+else:
+    for file in file_array:
+        backup_file(file)
+        upgrade_image(file)
+        upgrade_liveness_probe(file)
+        upgrade_arguments(file)

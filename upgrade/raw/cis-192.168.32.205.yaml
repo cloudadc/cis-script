@@ -23,11 +23,9 @@ spec:
           livenessProbe:
             exec:
               command:
-              - curl
-              - -u
-              - "admin:admin"
-              - -k
-              - https://192.168.32.205/mgmt/shared/appsvcs/info
+              - sh
+              - -c
+              - echo 'import requests' > /tmp/live.py ; echo 'response = requests.get("https://192.168.200.208", verify=False, timeout=3)'  >> /tmp/live.py ; python -W ignore /tmp/live.py
             initialDelaySeconds: 15
             periodSeconds: 15
             successThreshold: 1
