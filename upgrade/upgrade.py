@@ -3,15 +3,18 @@ import re
 import shutil
 from datetime import datetime
 
-# Configuration for files, backup directory, and image replacement
 FILES = ["hygon-cis-197.20.30.204.yaml", "hygon-cis-197.20.30.205.yaml"]
-BACKUP_DIR = "backup"
-OLD_IMAGE = "artifactory.dev.cmbc.cn:31345/net-docker-ver-local/bigip-ctlr/k8s-bigip-ctlr:2.16.1"
-NEW_IMAGE = "artifactory.dev.cmbc.cn:31345/net-docker-ver-local/bigip-ctlr/k8s-bigip-ctlr:2.17.1"
+OLD_IMAGE = "artifactory.dev.com:31345/net-docker-ver-local/bigip-ctlr/k8s-bigip-ctlr:2.16.1"
+NEW_IMAGE = "artifactory.dev.com:31345/net-docker-ver-local/bigip-ctlr/k8s-bigip-ctlr:2.17.1"
+SYNC_INTERVAL="30"
+NAMESPACE_LABEL="cis.f5.com/zone=zone-1"
 
-NEW_ARGS = '''            "--disable-teems=true",
-            "--periodic-sync-interval=300",
-            "--namespace-label=cis.f5.com/zone=zone-1",'''
+update_backup_directory   = "backup"
+new_args_disable_teems    = '''            "--disable-teems=true",'''
+new_args_sync_interval    = '''            "--periodic-sync-interval=REPLACEMENT",'''
+new_args_namespace_label  = '''            "--namespace-label=REPLACEMENT",'''
+new_args_sync_interval    = new_args_sync_interval.replace("REPLACEMENT", SYNC_INTERVAL)
+new_args_namespace_label  = new_args_namespace_label.replace("REPLACEMENT", NAMESPACE_LABEL) 
 
 new_liveness_probe = """          livenessProbe:
             exec:
@@ -26,18 +29,16 @@ new_liveness_probe = """          livenessProbe:
 
 
 def backup_file(file):
-    """Creates a backup of the specified file."""
     if os.path.isfile(file):
-        if not os.path.exists(BACKUP_DIR):
-            os.makedirs(BACKUP_DIR)
-        backup_file_name = os.path.join(BACKUP_DIR, f"{os.path.basename(file)}_{datetime.now().strftime('%Y%m%d%H%M%S')}.bak")
+        if not os.path.exists(update_backup_directory):
+            os.makedirs(update_backup_directory)
+        backup_file_name = os.path.join(update_backup_directory, f"{os.path.basename(file)}_{datetime.now().strftime('%Y%m%d%H%M%S')}.bak")
         shutil.copy2(file, backup_file_name)
         print(f"Backup of {file} completed: {backup_file_name}")
     else:
         print(f"Error: {file} does not exist.")
 
 def upgrade_image(file):
-    """Replaces the old image with the new image in the specified file."""
     if os.path.isfile(file):
         with open(file, 'r') as f:
             content = f.read()
@@ -82,21 +83,43 @@ def upgrade_liveness_probe(file):
     else:
         print(f"Error: {file} does not exist.")
 
+def extract_args_section(file):
+    if os.path.isfile(file):
+        with open(file, 'r') as f:
+            content = f.read()
+
+        args_pattern = re.compile(r'args:\s*\[(.*?)\]', re.DOTALL)
+        args_match = args_pattern.search(content)
+
+        if args_match:
+            args_section = args_match.group(1)
+            return args_section
+        else:
+            print("No args section found in the file.")
+            return None
+    else:
+        print(f"File {file} does not exist.")
+        return None
+
 def upgrade_arguments(file):
-    """Replaces certain arguments in the file and adds new arguments after a specific line."""
+    args = extract_args_section(file)
     if os.path.isfile(file):
         with open(file, 'r') as f:
             lines = f.readlines()
 
         with open(file, 'w') as f:
             for line in lines:
-                # Remove existing --namespace arguments
                 if '--namespace=' in line:
                     continue
                 f.write(line)
-                # Add new arguments after --bigip-partition line
+ 
                 if '--bigip-partition=' in line:
-                    f.write(NEW_ARGS + '\n')
+                    if "--disable-teems" not in args:
+                        f.write(new_args_disable_teems + '\n')
+                    if "--periodic-sync-interval" not in args:
+                        f.write(new_args_sync_interval + '\n')
+                    if "--namespace-label" not in args:
+                        f.write(new_args_namespace_label + '\n')
 
         print(f"Updated arguments in {file}")
     else:

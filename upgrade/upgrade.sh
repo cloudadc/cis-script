@@ -2,8 +2,8 @@
 
 FILES=("hygon-cis-197.20.30.204.yaml" "hygon-cis-197.20.30.205.yaml")
 BACKUP_DIR="backup"
-OLD_IMAGE="artifactory.dev.cmbc.cn:31345/net-docker-ver-local/bigip-ctlr/k8s-bigip-ctlr:2.16.1"
-NEW_IMAGE="artifactory.dev.cmbc.cn:31345/net-docker-ver-local/bigip-ctlr/k8s-bigip-ctlr:2.17.1"
+OLD_IMAGE="artifactory.dev.com:31345/net-docker-ver-local/bigip-ctlr/k8s-bigip-ctlr:2.16.1"
+NEW_IMAGE="artifactory.dev.com:31345/net-docker-ver-local/bigip-ctlr/k8s-bigip-ctlr:2.17.1"
 
 NEW_ARGS='            "--disable-teems=true",
             "--periodic-sync-interval=300",

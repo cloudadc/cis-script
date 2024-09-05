@@ -1,25 +1,26 @@
+SDN01TMP:/home/kpuatcls01/bigip-ctlr # cat k8s-bigip-ctlr-192-168-31-205-nsgroup1.20240809 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: k8s-bigip-ctlr-197-20-30-205-nsgroup1
+  name: k8s-bigip-ctlr-192-168-31-205-nsgroup1
   namespace: bigip-ctlr-ns
   labels:
-    app: k8s-bigip-ctlr-197-20-30-205-nsgroup1
+    app: k8s-bigip-ctlr-192-168-31-205-nsgroup1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: k8s-bigip-ctlr-197-20-30-205-nsgroup1
+      app: k8s-bigip-ctlr-192-168-31-205-nsgroup1
   template:
     metadata:
-      name: k8s-bigip-ctlr-197-20-30-205-nsgroup1
+      name: k8s-bigip-ctlr-192-168-31-205-nsgroup1
       labels:
-        app: k8s-bigip-ctlr-197-20-30-205-nsgroup1
+        app: k8s-bigip-ctlr-192-168-31-205-nsgroup1
     spec:
       serviceAccountName: bigip-ctlr-sa1
       containers:
         - name: k8s-bigip-ctlr
-          image: "artifactory.dev.cmbc.cn:31345/net-docker-ver-local/bigip-ctlr/k8s-bigip-ctlr:2.16.1"
+          image: "artifactory.dev.com:31345/net-docker-ver-local/bigip-ctlr/k8s-bigip-ctlr:2.16.1-aarch64"
           livenessProbe:
             exec:
               command:
@@ -27,7 +28,7 @@ spec:
               - -u
               - "admin:admin"
               - -k
-              - https://197.20.30.205/mgmt/shared/appsvcs/info
+              - https://192.168.31.205/mgmt/shared/appsvcs/info
             initialDelaySeconds: 15
             periodSeconds: 15
             successThreshold: 1
@@ -51,9 +52,9 @@ spec:
                 secretKeyRef:
                   name: bigip-login
                   key: password
-            - name: cmbc_logs_cispod
+            - name: acme_logs_cispod
               value: stdout
-            - name: cmbc_logs_cispod_tags
+            - name: acme_logs_cispod_tags
               value: topic=elk-k8s-cispod
           command: ["/app/bin/k8s-bigip-ctlr"]
           args: [
@@ -62,15 +63,12 @@ spec:
             "--hubmode=true",
             "--filter-tenants=true",
             "--log-as3-response=true",
-            "--bigip-url=197.20.30.205",
+            "--bigip-url=192.168.31.205",
             "--insecure=true",
             "--bigip-partition=k8s",
             "--pool-member-type=cluster",
             "--namespace=f5-manage01",
             "--namespace=f5-manage02",
-            "--namespace=f5-manage03",
-            "--namespace=f5-manage04",
             "--manage-configmaps=true",
             "--manage-ingress=false",
             ]
-
