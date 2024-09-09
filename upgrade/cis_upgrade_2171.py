@@ -55,7 +55,8 @@ def backup_file(file):
     if os.path.isfile(file):
         if not os.path.exists(update_backup_directory):
             os.makedirs(update_backup_directory)
-        backup_file_name = os.path.join(update_backup_directory, f"{os.path.basename(file)}_{datetime.now().strftime('%Y%m%d%H%M%S')}.bak")
+        filepath = os.path.basename(file) + "_" + datetime.now().strftime('%Y%m%d%H%M%S') + ".bak"
+        backup_file_name = os.path.join(update_backup_directory, filepath)
         shutil.copy2(file, backup_file_name)
         print(f"Backup of {file} completed: {backup_file_name}")
     else:
