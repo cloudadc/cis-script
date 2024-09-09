@@ -58,9 +58,9 @@ def backup_file(file):
         filepath = os.path.basename(file) + "_" + datetime.now().strftime('%Y%m%d%H%M%S') + ".bak"
         backup_file_name = os.path.join(update_backup_directory, filepath)
         shutil.copy2(file, backup_file_name)
-        print(f"Backup of {file} completed: {backup_file_name}")
+        print("Backup of {} completed: {}".format(file, backup_file_name))
     else:
-        print(f"Error: {file} does not exist.")
+        print("Error: {} does not exist.".format(file))
 
 def extract_image_from_yaml(file):
     if os.path.isfile(file):
@@ -84,12 +84,13 @@ def upgrade_image(file):
     if os.path.isfile(file):
         with open(file, 'r') as f:
             content = f.read()
-        content = content.replace(f'image: "{old_cis_image}"', f'image: "{NEW_IMAGE}"')
+        content = content.replace('image: "{}"'.format(old_cis_image), 'image: "{}"'.format(NEW_IMAGE))
         with open(file, 'w') as f:
             f.write(content)
-        print(f"Replaced image in {file} to {NEW_IMAGE}")
+        print("Replaced image in {} to {}".format(file, NEW_IMAGE))
     else:
-        print(f"Error: {file} does not exist.")
+        print("Error: {} does not exist.".format(file))
+
 
 def upgrade_liveness_probe(file):
     if os.path.isfile(file):
@@ -121,9 +122,9 @@ def upgrade_liveness_probe(file):
         with open(file, 'w') as f:
             f.writelines(updated_content)
 
-        print(f"Updated livenessProbe section in {file}.")
+        print("Updated livenessProbe section in {}.".format(file))
     else:
-        print(f"Error: {file} does not exist.")
+        print("Error: {} does not exist.".format(file))
 
 def extract_args_section(file):
     if os.path.isfile(file):
@@ -140,7 +141,7 @@ def extract_args_section(file):
             print("No args section found in the file.")
             return None
     else:
-        print(f"File {file} does not exist.")
+        print("Error: {} does not exist.".format(file))
         return None
 
 def upgrade_arguments(file):
@@ -163,9 +164,9 @@ def upgrade_arguments(file):
                     if "--namespace-label" not in args:
                         f.write(new_args_namespace_label + '\n')
 
-        print(f"Updated arguments in {file}")
+        print("Updated arguments in {}.".format(file))
     else:
-        print(f"Error: {file} does not exist.")
+        print("Error: {} does not exist.".format(file))
 
 def upgrade_configmap(file_path):
     with open(file_path, 'r') as file:
@@ -183,7 +184,8 @@ def upgrade_configmap(file_path):
     with open(file_path, 'w') as file:
         file.writelines(modified_lines)
 
-    print(f"Add {new_label_line} to {file_path}")
+    print("Add {} to {}.".format(new_label_line, file_path))
+
 
 
 if cli.cm:
