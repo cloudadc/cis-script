@@ -11,7 +11,7 @@ metadata:
   name: app-1
   namespace: cistest002
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: app-1
@@ -21,7 +21,7 @@ spec:
         app: app-1
     spec:
       containers:
-      - image: cloudadc/cafe:1.0
+      - image: cloudadc/cafe:2.0
         name: backend
         ports:
         - containerPort: 8080
@@ -32,7 +32,7 @@ metadata:
   labels:
     cis.f5.com/as3-tenant: cistest002
     cis.f5.com/as3-app: app-1
-    cis.f5.com/as3-pool: app_1_svc_pool
+    cis.f5.com/as3-pool: app-1_svc_pool
   name: app-svc-1
   namespace: cistest002
 spec:

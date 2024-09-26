@@ -11,7 +11,7 @@ metadata:
   name: app-1
   namespace: cistest003
 spec:
-  replicas: 2
+  replicas: 0
   selector:
     matchLabels:
       app: app-1
@@ -21,7 +21,7 @@ spec:
         app: app-1
     spec:
       containers:
-      - image: cloudadc/cafe:1.0
+      - image: cloudadc/cafe:2.0
         name: backend
         ports:
         - containerPort: 8080
